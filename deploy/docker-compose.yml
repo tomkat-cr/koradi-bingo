@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    ports: ["27017:27017"]
+    volumes:
+      - mongo-data:/data/db
+
+  server:
+    image: node:18-alpine
+    working_dir: /app
+    command: sh -c "npm ci && node src/server.js"
+    volumes:
+      - ../server:/app
+    environment:
+      - PORT=4000
+      - MONGO_URI=mongodb://mongo:27017/koradi_bingo
+      - CORS_ORIGIN=http://localhost:5173
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - ORG_NAME=Fundación Koradi
+      - GOAL_MIN=21100000
+      - GOAL_MAX=24100000
+      - BINGO_PRICE=30000
+    ports: ["4000:4000"]
+    depends_on: [mongo]
+
+  web:
+    image: nginx:alpine
+    depends_on: [server]
+    volumes:
+      - ../client/dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports: ["80:80"]
+
+volumes:
+  mongo-data:

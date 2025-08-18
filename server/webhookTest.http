@@ -1,0 +1,34 @@
+### Test webhook endpoint
+POST http://localhost:4000/api/stripe/webhook
+Content-Type: application/json
+stripe-signature: test_signature
+
+{
+  "id": "evt_test_webhook",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1326853478,
+  "data": {
+    "object": {
+      "id": "cs_test_session",
+      "object": "checkout.session",
+      "amount_total": 30000,
+      "currency": "cop",
+      "customer_details": {
+        "email": "test@example.com"
+      },
+      "metadata": {
+        "type": "card",
+        "name": "Test User",
+        "phone": "+57123456789"
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_test_request",
+    "idempotency_key": null
+  },
+  "type": "checkout.session.completed"
+}

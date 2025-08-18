@@ -1,0 +1,29 @@
+{
+  "name": "koradi-bingo",
+  "version": "1.0.0",
+  "description": "Full-stack donation bingo platform for Fundación Koradi - Arte que Sana",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -k \"npm:dev:*\"",
+    "dev:server": "npm --workspace server run dev",
+    "dev:client": "npm --workspace client run dev",
+    "build": "npm -w client run build",
+    "start": "npm -w server run start",
+    "install:all": "npm install && npm -w server install && npm -w client install",
+    "clean": "npm -w server run clean && npm -w client run clean"
+  },
+  "keywords": ["bingo", "donation", "fundraising", "react", "nodejs", "mongodb", "stripe"],
+  "author": "Omar Tobon",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
