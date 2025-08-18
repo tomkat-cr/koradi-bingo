@@ -4,6 +4,7 @@ dotenv.config();
 export const env = {
   PORT: process.env.PORT || 4000,
   MONGO_URI: process.env.MONGO_URI,
+  MONGO_DATABASE: process.env.MONGO_DATABASE,
   CORS_ORIGIN: process.env.CORS_ORIGIN || '*',
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,

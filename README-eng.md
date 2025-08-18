@@ -69,10 +69,12 @@ The project embodies the mission "Arte que Sana" (Art that Heals) by combining t
 
 Before running this project, make sure you have the following installed:
 
+- **Docker** (to run the server and MongoDB locally)
 - **Node.js** (version 18.0.0 or higher)
-- **npm** (version 8.0.0 or higher)
 - **MongoDB** (local installation or MongoDB Atlas)
 - **Stripe Account** (for payment processing)
+- **Git** (to clone the repository)
+- **Make** (to run the Makefile)
 
 ### Installation
 
@@ -163,6 +165,12 @@ make build
 cd server
 make start
 ```
+
+**Enter the system**
+
+- Load your preferred web browser
+- Go to [http://localhost](http://localhost)
+
 
 ### Available Make Commands
 

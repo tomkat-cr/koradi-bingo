@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { getProgress, createCheckout } from '../api.js'
 import ProgressBar from './ProgressBar.jsx'
+import logo from '../assets/koradi-logo.png'
 
 export default function Landing({ onGoBingo }){
   const [progress, setProgress] = useState({ total:0, goalMin:21100000, goalMax:24100000 })
@@ -51,7 +52,10 @@ export default function Landing({ onGoBingo }){
         </div>
       </div>
       <div>
-        <div className="card" style={{padding:16}}>
+        <div className="logo">
+          <img src={logo} width={420} alt="Koradi Logo" />
+        </div>
+        <div className="card">
           <h3>Necesidades urgentes</h3>
           <ul>
             <li>Cambio de techo en salas principales</li>

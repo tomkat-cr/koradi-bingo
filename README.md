@@ -77,6 +77,7 @@ Antes de ejecutar este proyecto, asegúrate de tener instalado lo siguiente:
 - **Node.js** (versión 18.0.0 o superior)
 - **MongoDB** (instalación local o mejor aun MongoDB Atlas)
 - **Cuenta de Stripe** (para procesamiento de pagos)
+- **Git** (para clonar el repositorio)
 - **Make** (para automatización de construcción)
 
 ### Instalación
@@ -108,16 +109,19 @@ make install
 
 Crear archivos `.env` en los directorios raíz y servidor:
 
-**`.env` raíz:**
+**`.env` en directorio client:**
 ```bash
 VITE_API_BASE_URL=http://localhost:4000
 VITE_STRIPE_PUBLIC_KEY=pk_test_tu_clave_publica_stripe
 ```
 
-**`.env` del servidor:**
+**`.env` en directorio server:**
 ```bash
 PORT=4000
-MONGO_URI=mongodb://localhost:27017/koradi_bingo
+MONGO_URI=mongodb://root:example@mongo:27017/
+MONGO_DATABASE=koradi_bingo
+MONGO_USERNAME=root
+MONGO_PASSWORD=example
 CORS_ORIGIN=http://localhost:5173
 STRIPE_SECRET_KEY=sk_test_tu_clave_secreta_stripe
 STRIPE_WEBHOOK_SECRET=whsec_tu_secreto_webhook

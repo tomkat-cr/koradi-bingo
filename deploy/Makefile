@@ -21,7 +21,7 @@ help:
 
 # Start all services
 up:
-	docker-compose up -d
+	bash run-server.sh
 
 # Stop all services
 down:
