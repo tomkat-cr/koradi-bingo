@@ -21,6 +21,13 @@ router.post('/draw/next', async (req,res)=>{
   res.json({ next, drawn: state.drawnNumbers });
 });
 
+// sorteo: actualizar websocket
+router.post('/draw/update', async (req,res)=>{
+  const state = await DrawState.findOne({}) || await DrawState.create({});
+  req.io.emit('number:drawn', { drawn: state.drawnNumbers, last: state.lastNumber });
+  res.json({ drawn: state.drawnNumbers, last: state.lastNumber });
+});
+
 router.post('/draw/reset', async (req,res)=>{
   const state = await DrawState.findOne({});
   if(state){ state.drawnNumbers=[]; state.lastNumber=null; await state.save(); }

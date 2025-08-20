@@ -14,7 +14,7 @@
     "build": "npm -w client run build:from_root",
     "start": "npm -w server run start:from_root",
     "install:all": "npm install && npm -w server install && npm -w client install",
-    "clean": "npm -w server run clean && npm -w client run clean"
+    "clean": "npm -w server run clean && npm -w client run clean && rm -rf node_modules"
   },
   "keywords": [
     "bingo",

@@ -19,6 +19,13 @@ A full-stack donation bingo platform designed to raise funds for Fundación Kora
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 - [Usage](#usage)
+  - [Development Mode](#development-mode)
+  - [Production Mode](#production-mode)
+  - [Available Make Commands](#available-make-commands)
+- [API Endpoints](#api-endpoints)
+- [Bold Configuration](#bold-configuration)
+- [Stripe Webhook Setup](#stripe-webhook-setup)
+- [Secure Server Configuration](#secure-server-configuration)
 - [Project Structure](#project-structure)
 - [License](#license)
 - [Contributing](#contributing)
@@ -29,6 +36,12 @@ A full-stack donation bingo platform designed to raise funds for Fundación Kora
 Koradi Bingo is a modern, real-time bingo platform that enables participants to purchase bingo cards or make direct donations to support young people in rehabilitation. The platform features live number drawing, automatic winner verification, real-time progress tracking, and secure payment processing through Stripe.
 
 The project embodies the mission "Arte que Sana" (Art that Heals) by combining technology with social impact, creating an engaging way for the community to contribute to a meaningful cause.
+
+### Terminology notes
+
+- **Fundación Koradi**: Official organization name in Spanish. In configs, `ORG_NAME` is kept as "Fundación Koradi".
+- **Art that Heals**: English translation of the Spanish slogan "Arte que Sana".
+- **COP amounts**: Prices and goals are in COP (Colombian Pesos). Example: `BINGO_PRICE=30000` equals COP $30,000.
 
 ## Features
 
@@ -72,7 +85,8 @@ Before running this project, make sure you have the following installed:
 - **Docker** (to run the server and MongoDB locally)
 - **Node.js** (version 18.0.0 or higher)
 - **MongoDB** (local installation or MongoDB Atlas)
-- **Stripe Account** (for payment processing)
+- **Bold Account** (for payment processing from Colombia)
+- **Stripe Account** (for payment processing from the US)
 - **Git** (to clone the repository)
 - **Make** (to run the Makefile)
 
@@ -84,24 +98,12 @@ git clone https://github.com/otobonh/koradi-bingo.git
 cd koradi-bingo
 ```
 
-2. **Install root dependencies**
+2. **Install all dependencies (server and client)**
 ```bash
 npm install
 ```
 
-3. **Install server dependencies**
-```bash
-cd server
-make install
-```
-
-4. **Install client dependencies**
-```bash
-cd ../client
-make install
-```
-
-5. **Set up environment variables**
+3. **Set up environment variables**
 
 Create `.env` files in the client and server directories:
 
@@ -137,13 +139,32 @@ ADMIN_USERNAME=username
 ADMIN_PASSWORD=password
 ```
 
-6. **Start MongoDB**
+4. **Start MongoDB**
 
 Make sure MongoDB is running on your system or configure MongoDB Atlas connection.
 
 ## Usage
 
 ### Development Mode
+
+* With Docker and local MongoDB
+
+**Start client, server and mongoDB simultaneously:**
+```bash
+make run
+```
+
+**Restart services:**
+```bash
+make restart
+```
+
+**Stop services:**
+```bash
+make down
+```
+
+* With Vite, NodeJS and MongoDB Atlas
 
 **Start both client and server simultaneously:**
 ```bash

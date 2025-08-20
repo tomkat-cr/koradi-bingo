@@ -9,7 +9,7 @@ help:
 
 # Start all services
 up:
-	cd deploy && make up && make logs-f
+	make build && cd deploy && make up && make logs-f
 
 run: up
 
@@ -19,11 +19,11 @@ down:
 
 # Restart all services
 restart:
-	cd deploy && make restart
+	make build && cd deploy && make restart
 
 # Restart all services
 hard-restart:
-	cd deploy && make down && make up && make logs-f
+	make build && cd deploy && make down && make up && make logs-f
 
 # Show logs
 logs:
@@ -35,7 +35,7 @@ logs-f:
 
 # Clean up - stop services and remove volumes
 clean-docker:
-	docker-compose down -v
+	cd deploy && docker-compose down -v
 	docker system prune -f
 
 # Show service status

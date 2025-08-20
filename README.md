@@ -3,8 +3,8 @@
 ![Koradi Bingo](./client/src/assets/koradi-logo.png)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-green.svg)
 ![React](https://img.shields.io/badge/react-18.2.0-blue.svg)
 ![Express](https://img.shields.io/badge/express-4.19.2-lightgrey.svg)
 
@@ -23,6 +23,13 @@ Es una plataforma full-stack que combina tecnologías como React para el fronten
   - [Prerrequisitos](#prerrequisitos)
   - [Instalación](#instalación)
 - [Uso](#uso)
+  - [Modo de Desarrollo](#modo-de-desarrollo)
+  - [Modo de Producción](#modo-de-producción)
+  - [Comandos Make Disponibles](#comandos-make-disponibles)
+- [Endpoints de la API](#endpoints-de-la-api)
+- [Configuración de Bold](#configuración-de-bold)
+- [Configuración de Webhook de Stripe](#configuración-de-webhook-de-stripe)
+- [Configuración de servidor seguro](#configuración-de-servidor-seguro)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Licencia](#licencia)
 - [Contribuir](#contribuir)
@@ -76,7 +83,8 @@ Antes de ejecutar este proyecto, asegúrate de tener instalado lo siguiente:
 - **Docker** (para despliegue en contenedores)
 - **Node.js** (versión 18.0.0 o superior)
 - **MongoDB** (instalación local o mejor aun MongoDB Atlas)
-- **Cuenta de Stripe** (para procesamiento de pagos)
+- **Cuenta de Bold** (para procesamiento de pagos desde Colombia)
+- **Cuenta de Stripe** (para procesamiento de pagos desde Estados Unidos)
 - **Git** (para clonar el repositorio)
 - **Make** (para automatización de construcción)
 
@@ -88,24 +96,12 @@ git clone https://github.com/otobonh/koradi-bingo.git
 cd koradi-bingo
 ```
 
-2. **Instalar dependencias raíz**
+2. **Instalar todas las dependencias (server y client)**
 ```bash
 npm install
 ```
 
-3. **Instalar dependencias del servidor**
-```bash
-cd server
-make install
-```
-
-4. **Instalar dependencias del cliente**
-```bash
-cd ../client
-make install
-```
-
-5. **Configurar variables de entorno**
+3. **Configurar variables de entorno**
 
 Crear archivos `.env` en los directorios raíz y servidor:
 
@@ -141,13 +137,32 @@ ADMIN_USERNAME=username
 ADMIN_PASSWORD=password
 ```
 
-6. **Iniciar MongoDB**
+4. **Iniciar MongoDB**
 
 Asegúrate de que MongoDB esté ejecutándose en tu sistema o configura la conexión a MongoDB Atlas.
 
 ## Uso
 
 ### Modo de Desarrollo
+
+* Con Docker y MongoDb local
+
+**Iniciar cliente, servidor y mongoDB simultáneamente:**
+```bash
+make run
+```
+
+**Reinicio de servicios:**
+```bash
+make restart
+```
+
+**Detener servicios:**
+```bash
+make down
+```
+
+* Con Vite, NodeJS y MongoDb Atlas
 
 **Iniciar cliente y servidor simultáneamente:**
 ```bash

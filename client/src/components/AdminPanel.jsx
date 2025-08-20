@@ -35,6 +35,13 @@ export default function AdminPanel(){
     currentDraws()
   }
 
+  const updateDraw = async ()=>{
+    const r = await fetch(`${BASE}/api/admin/draw/update`,{ method:'POST' })
+    const data = await r.json()
+    setNext(data.next)
+    currentDraws()
+  }
+
   const reset = async () => {
     await fetch(`${BASE}/api/admin/draw/reset`,{ method:'POST' })
     setNext(null)
@@ -74,11 +81,16 @@ export default function AdminPanel(){
       <>
         <div className="card">
           <h2>Panel Staff</h2>
-          <p>Desde aquí el equipo puede cantar números y reiniciar el sorteo.</p>
+          <p>Desde aquí el equipo puede cantar números y hacer seguimiento del sorteo.</p>
           <div style={{display:'flex',gap:8}}>
             <button className="btn btn-primary" onClick={drawNext}>Cantar siguiente</button>
-            <button className="btn btn-outline" onClick={reset}>Reiniciar</button>
+            <button className="btn btn-primary" onClick={updateDraw}>Actualizar Websocket</button>
           </div>
+        </div>
+        <div className="card">
+          <h2>Sorteo actual</h2>
+          {draws && <p>Números cantados: <strong>{draws.drawn.join(', ')}</strong></p>}
+          {draws && <p>Último cantado: <strong>{draws.last}</strong></p>}
         </div>
         <div className="card">
           <h2>Transmisión en vivo</h2>
@@ -93,9 +105,11 @@ export default function AdminPanel(){
           </div>
         </div>
         <div className="card">
-          <h2>Sorteo actual</h2>
-          {draws && <p>Números cantados: <strong>{draws.drawn.join(', ')}</strong></p>}
-          {draws && <p>Último cantado: <strong>{draws.last}</strong></p>}
+          <h2>Zona de control</h2>
+          <p>Desde aquí el equipo puede reiniciar el sorteo. Tenga en cuenta que esto puede afectar a los jugadores que ya hayan comprado cartones.</p>
+          <div style={{display:'flex',gap:8}}>
+            <button className="btn btn-outline" onClick={reset}>Reiniciar</button>
+          </div>
         </div>
       </>
     ) : (

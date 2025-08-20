@@ -9,7 +9,8 @@
         "preview": "vite preview",
         "start:from_root": "bash ./run-client.sh run",
         "build:from_root": "bash ./run-client.sh build",
-        "preview:from_root": "bash ./run-client.sh preview"
+        "preview:from_root": "bash ./run-client.sh preview",
+        "clean": "rm -rf node_modules"
     },
     "dependencies": {
         "react": "^18.2.0",
