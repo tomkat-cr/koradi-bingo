@@ -21,6 +21,10 @@ down:
 restart:
 	cd deploy && make restart
 
+# Restart all services
+hard-restart:
+	cd deploy && make down && make up && make logs-f
+
 # Show logs
 logs:
 	cd deploy && make logs
@@ -30,7 +34,7 @@ logs-f:
 	cd deploy && make logs-f
 
 # Clean up - stop services and remove volumes
-clean:
+clean-docker:
 	docker-compose down -v
 	docker system prune -f
 
@@ -56,3 +60,8 @@ clean:
 list-scripts:
 	npm run --workspace=koradi-bingo-server
 	npm run --workspace=koradi-bingo-client
+
+ssl-certs-creation:
+	@echo "Creating SSL certificates"
+	@bash ./scripts/local_ssl_certs_creation.sh
+	

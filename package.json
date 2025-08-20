@@ -11,12 +11,20 @@
     "dev": "concurrently -k \"npm:dev:*\"",
     "dev:server": "npm --workspace server run dev",
     "dev:client": "npm --workspace client run dev",
-    "build": "npm -w client run build",
-    "start": "npm -w server run start",
+    "build": "npm -w client run build:from_root",
+    "start": "npm -w server run start:from_root",
     "install:all": "npm install && npm -w server install && npm -w client install",
     "clean": "npm -w server run clean && npm -w client run clean"
   },
-  "keywords": ["bingo", "donation", "fundraising", "react", "nodejs", "mongodb", "stripe"],
+  "keywords": [
+    "bingo",
+    "donation",
+    "fundraising",
+    "react",
+    "nodejs",
+    "mongodb",
+    "stripe"
+  ],
   "author": "Omar Tobon",
   "license": "MIT",
   "devDependencies": {

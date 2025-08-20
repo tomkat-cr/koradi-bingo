@@ -1,5 +1,5 @@
-    import React, { useState } from 'react'
-import { fetchMyCard, claimBingo } from '../api.js'
+import React, { useState, useEffect } from 'react'
+import { fetchMyCard, claimBingo, fetchLiveUrl } from '../api.js'
 import BingoCard from './BingoCard.jsx'
 import LiveNumbers from './LiveNumbers.jsx'
 
@@ -7,6 +7,7 @@ export default function BingoPage(){
   const [email, setEmail] = useState('')
   const [card, setCard] = useState(null)
   const [status, setStatus] = useState('')
+  const [liveUrl, setLiveUrl] = useState('')
 
   const loadCard = async ()=>{
     try{
@@ -14,6 +15,18 @@ export default function BingoPage(){
       setCard(card); setStatus('¡Cartón cargado!')
     }catch(e){ setStatus(e.message) }
   }
+
+  const loadLiveUrl = async ()=>{
+    try{
+      const { url } = await fetchLiveUrl()
+      console.log('Live URL:', url)
+      setLiveUrl(url.url)
+    }catch(e){ setStatus(e.message) }
+  }
+
+  useEffect(()=>{
+    loadLiveUrl()
+  },[])
 
   const onClaim = async ()=>{
     try{
@@ -28,7 +41,7 @@ export default function BingoPage(){
         <h2>Transmisión en vivo</h2>
         <div style={{position:'relative',paddingTop:'56.25%'}}>
           <iframe
-            src="https://www.youtube.com/embed/live_stream?channel=UCxxxxxxxx"
+            src={liveUrl}
             title="Koradi en Vivo"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen

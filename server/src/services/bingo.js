@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto';
+import BingoCard from '../models/BingoCard.js';
+import { debug } from '../utils/utilities.js';
 
 // Rangos estándar B I N G O
 const RANGES = {
@@ -52,4 +54,13 @@ export function checkBingo(card, drawnNumbers){
   if([0,1,2,3,4].every(i=>grid[i][i])) return true;
   if([0,1,2,3,4].every(i=>grid[i][4-i])) return true;
   return false;
+}
+
+export async function assignNewCard(user, purchased){
+  const { code, cells } = generateCard();
+  const bingoCardData = { code, cells, assignedTo: user._id, purchased };
+  if (debug) console.log('>> assignNewCard:', bingoCardData);
+  const card = await BingoCard.create(bingoCardData);
+  if (debug) console.log('>> assignNewCard result:', card);
+  return card;
 }

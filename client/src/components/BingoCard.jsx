@@ -1,4 +1,7 @@
-    import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { io } from 'socket.io-client'
+
+const SOCKET_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace('http','ws')
 
 const HEADERS = ['B','I','N','G','O']
 const RANGES = { 0:[1,15], 1:[16,30], 2:[31,45], 3:[46,60], 4:[61,75] }
@@ -17,6 +20,16 @@ function generateLocalCard(){
 }
 
 export default function BingoCard({ card }){
+  const [drawn, setDrawn] = useState([])
+  const [last, setLast] = useState(null)
+
+  useEffect(()=>{
+    const socket = io(SOCKET_URL, { transports:['websocket'] })
+    socket.on('number:drawn', ({ number, drawn })=>{ setLast(number); setDrawn(drawn) })
+    socket.on('draw:reset', ()=>{ setDrawn([]); setLast(null) })
+    return ()=>socket.disconnect()
+  },[])
+
   const grid = React.useMemo(()=>{
     if(card?.cells){
       const g = Array.from({length:5},()=>Array(5).fill(''))
@@ -42,7 +55,7 @@ export default function BingoCard({ card }){
           <React.Fragment key={r}>
             {row.map((cell,c)=>{
               const isFree = (r===2 && c===2)
-              return <div key={`${r}-${c}`} className={`bingo-cell ${isFree?'free':''}`}>{cell}</div>
+              return <div key={`${r}-${c}`} className={`bingo-cell ${isFree?'free':''} ${drawn.includes(cell)?'hit':''}`}>{cell}</div>
             })}
           </React.Fragment>
         ))}

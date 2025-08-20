@@ -1,4 +1,4 @@
-# Koradi Bingo - Arte que Sana
+# Koradi Bingo - Art that Heals
 
 ![Koradi Bingo](./client/src/assets/koradi-logo.png)
 
@@ -80,7 +80,7 @@ Before running this project, make sure you have the following installed:
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/tomkat-cr/koradi-bingo.git
+git clone https://github.com/otobonh/koradi-bingo.git
 cd koradi-bingo
 ```
 
@@ -103,26 +103,38 @@ make install
 
 5. **Set up environment variables**
 
-Create `.env` files in both root and server directories:
+Create `.env` files in the client and server directories:
 
-**Root `.env`:**
+**Client `.env`:**
 ```bash
-VITE_API_BASE_URL=http://localhost:4000
-VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key
+VITE_APP_DOMAIN_NAME=localhost
+VITE_API_BASE_URL=http://${VITE_APP_DOMAIN_NAME}:4000
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key_here
+VITE_BOLD_PUBLIC_KEY=pk_test_your_bold_public_key_here
+VITE_BINGO_PRICE=${BINGO_PRICE:-30000}
+VITE_DEBUG=0
 ```
 
 **Server `.env`:**
 ```bash
+SERVER_DEBUG=1
 PORT=4000
-MONGO_URI=mongodb://localhost:27017/koradi_bingo
-CORS_ORIGIN=http://localhost:5173
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+APP_DOMAIN_NAME=localhost
+MONGO_DATABASE=koradi_bingo
+MONGO_USERNAME=root
+MONGO_PASSWORD=example
+MONGO_URI=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017
+CORS_ORIGIN=http://${APP_DOMAIN_NAME}
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+BOLD_PRIVATE_KEY=pk_test_your_bold_private_key_here
+APP_NAME="Koradi Bingo"
 ORG_NAME="Fundación Koradi"
 GOAL_MIN=21100000
 GOAL_MAX=24100000
 BINGO_PRICE=30000
-JWT_SECRET=your_jwt_secret_here
+ADMIN_USERNAME=username
+ADMIN_PASSWORD=password
 ```
 
 6. **Start MongoDB**
@@ -174,11 +186,32 @@ make start
 
 ### Available Make Commands
 
+**Root commands:**
+```bash
+make run                # Run in development mode
+make up                 # Run in production mode
+make down               # Stop services
+make restart            # Restart services (docker-compose restart)
+make hard-restart       # Restart services from scratch
+make logs               # Show logs
+make logs-f             # Follow logs
+make clean-docker       # Clean docker
+make status             # Show Docker services status
+make install            # Install dependencies for all projects (server and client)
+make build              # Build the client
+make start              # Start the server
+make dev                # Start the client
+make clean              # Clean dependencies for all projects (server and client)
+make list-scripts       # List available scripts
+make ssl-certs-creation # Create SSL certificates
+```
+
 **Server commands:**
 ```bash
 cd server
 make install     # Install dependencies
-make dev         # Run in development mode
+make run         # Run in development mode
+make dev         # Alias for run
 make start       # Run in production mode
 make clean       # Clean node_modules and package-lock.json
 make reinstall   # Clean and reinstall dependencies
@@ -190,7 +223,8 @@ make help        # Show available commands
 cd client
 make install       # Install dependencies
 make build         # Build for production
-make dev           # Run in development mode
+make run           # Run in development mode
+make dev           # Alias for run
 make preview       # Preview production build
 make clean         # Clean node_modules, package-lock.json, and dist
 make reinstall     # Clean and reinstall dependencies
@@ -206,10 +240,50 @@ make help          # Show available commands
 - `GET /api/my-card` - Get user's bingo card
 - `POST /api/claim-bingo` - Claim bingo win
 - `GET /api/draw/state` - Get current draw state
+- `GET /api/live-url` - Get live stream URL
+- `POST /api/bold-hash` - Generate Bold hash
 - `POST /api/admin/draw/next` - Draw next number (admin)
 - `POST /api/admin/draw/reset` - Reset draw (admin)
+- `POST /api/admin/login` - Admin login
+- `POST /api/admin/set-live-url` - Set live stream URL (admin)
+
+### Bold Configuration
+
+Configure your Bold account at https://bold.co.
+
+Then extract your Bold credentials and add them to the client and server `.env` files.
+
+In `client/.env`:
+```env
+# Bold public key
+VITE_BOLD_PUBLIC_KEY=pk_test_your_bold_public_key_here
+```
+
+In `server/.env`:
+```env
+# Bold private key
+BOLD_PRIVATE_KEY=pk_test_your_bold_private_key_here
+```
 
 ### Stripe Webhook Setup
+
+Set up your Stripe account at https://stripe.com.
+
+Then extract your Stripe credentials and add them to the client and server `.env` files.
+
+In `client/.env`:
+```env
+# Stripe public key
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key_here
+```
+
+In `server/.env`:
+```env
+# Stripe secret key
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+# Stripe webhook secret
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+```
 
 Configure your Stripe webhook endpoint to point to:
 ```
@@ -218,6 +292,38 @@ https://yourdomain.com/api/stripe/webhook
 
 Events to listen for:
 - `checkout.session.completed`
+
+### Secure Server Configuration
+
+Configure your local server to use SSL so you can test payment features, since some payment APIs and JavaScript features (for example `crypto`) require a secure server.
+
+You can use the `make ssl-certs-creation` script to create SSL certificates in the `server/ssl` directory.
+
+Add an entry to your `/etc/hosts` file with the following content:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Add the following line:
+
+```
+127.0.0.1 koradibingo.dev
+```
+
+Then set the following variables in the client and server `.env` files:
+
+In `client/.env`:
+```env
+VITE_APP_DOMAIN_NAME=koradibingo.dev
+VITE_API_BASE_URL=https://${VITE_APP_DOMAIN_NAME}
+```
+
+In `server/.env`:
+```env
+APP_DOMAIN_NAME=koradibingo.dev
+CORS_ORIGIN=https://${APP_DOMAIN_NAME}
+```
 
 ## Project Structure
 
@@ -281,9 +387,9 @@ Please make sure to update tests as appropriate and follow the existing code sty
 
 ## Credits
 
-This project is developed and maintained by [Omar Tobon](https:/omartobon.com). For more information or to contribute to the project, visit [Koradi Bingo](https://github.com/otobonh/koradi-bingo).
+This project is developed and maintained by [Omar Tobon](https://omartobon.com). For more information or to contribute to the project, visit [Koradi Bingo](https://github.com/otobonh/koradi-bingo).
 
 ---
 
-**Fundación Koradi - Arte que Sana** 🎨✨  
+**Koradi Foundation - Art that Heals** 🎨✨  
 *Supporting young people in rehabilitation through the healing power of art and community.*

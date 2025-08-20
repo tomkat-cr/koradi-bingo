@@ -111,25 +111,34 @@ Crear archivos `.env` en los directorios raíz y servidor:
 
 **`.env` en directorio client:**
 ```bash
-VITE_API_BASE_URL=http://localhost:4000
-VITE_STRIPE_PUBLIC_KEY=pk_test_tu_clave_publica_stripe
+VITE_APP_DOMAIN_NAME=localhost
+VITE_API_BASE_URL=http://${VITE_APP_DOMAIN_NAME}:4000
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key_here
+VITE_BOLD_PUBLIC_KEY=pk_test_your_bold_public_key_here
+VITE_BINGO_PRICE=${BINGO_PRICE:-30000}
+VITE_DEBUG=0
 ```
 
 **`.env` en directorio server:**
 ```bash
+SERVER_DEBUG=1
 PORT=4000
-MONGO_URI=mongodb://root:example@mongo:27017/
+APP_DOMAIN_NAME=localhost
 MONGO_DATABASE=koradi_bingo
 MONGO_USERNAME=root
 MONGO_PASSWORD=example
-CORS_ORIGIN=http://localhost:5173
-STRIPE_SECRET_KEY=sk_test_tu_clave_secreta_stripe
-STRIPE_WEBHOOK_SECRET=whsec_tu_secreto_webhook
+MONGO_URI=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017
+CORS_ORIGIN=http://${APP_DOMAIN_NAME}
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+BOLD_PRIVATE_KEY=pk_test_your_bold_private_key_here
+APP_NAME="Koradi Bingo"
 ORG_NAME="Fundación Koradi"
 GOAL_MIN=21100000
 GOAL_MAX=24100000
 BINGO_PRICE=30000
-JWT_SECRET=tu_secreto_jwt_aqui
+ADMIN_USERNAME=username
+ADMIN_PASSWORD=password
 ```
 
 6. **Iniciar MongoDB**
@@ -180,11 +189,32 @@ make start
 
 ### Comandos Make Disponibles
 
+**Comandos del directorio raíz:**
+```bash
+make run                # Ejecutar en modo desarrollo
+make up                 # Ejecutar en modo producción
+make down               # Detener servicios
+make restart            # Reiniciar servicios (con docker-compose restart)
+make hard-restart       # Reiniciar servicios desde cero
+make logs               # Mostrar logs
+make logs-f             # Seguir logs
+make clean-docker       # Limpiar docker
+make status             # Mostrar estado de los servicios en Docker
+make install            # Instalar dependencias de todos los proyectos (server y client)
+make build              # Construir el cliente
+make start              # Iniciar el servidor
+make dev                # Iniciar el cliente
+make clean              # Limpiar dependencias de todos los proyectos (server y client)
+make list-scripts       # Listar scripts disponibles
+make ssl-certs-creation # Crear certificados SSL
+```
+
 **Comandos del servidor:**
 ```bash
 cd server
 make install     # Instalar dependencias
-make dev         # Ejecutar en modo desarrollo
+make run         # Ejecutar en modo desarrollo
+make dev         # Alias de run
 make start       # Ejecutar en modo producción
 make clean       # Limpiar node_modules y package-lock.json
 make reinstall   # Limpiar y reinstalar dependencias
@@ -196,7 +226,8 @@ make help        # Mostrar comandos disponibles
 cd client
 make install       # Instalar dependencias
 make build         # Construir para producción
-make dev           # Ejecutar en modo desarrollo
+make run           # Ejecutar en modo desarrollo
+make dev           # Alias de run
 make preview       # Vista previa de construcción de producción
 make clean         # Limpiar node_modules, package-lock.json y dist
 make reinstall     # Limpiar y reinstalar dependencias
@@ -212,17 +243,91 @@ make help          # Mostrar comandos disponibles
 - `GET /api/my-card` - Obtener cartón de bingo del usuario
 - `POST /api/claim-bingo` - Reclamar victoria de bingo
 - `GET /api/draw/state` - Obtener estado actual del sorteo
+- `GET /api/live-url` - Obtener URL de transmisión
+- `POST /api/bold-hash` - Generar hash de Bold
 - `POST /api/admin/draw/next` - Sortear siguiente número (admin)
 - `POST /api/admin/draw/reset` - Reiniciar sorteo (admin)
+- `POST /api/admin/login` - Iniciar sesión (admin)
+- `POST /api/admin/set-live-url` - Establecer URL de transmisión (admin)
+
+### Configuración de Bold
+
+Configura tu cuenta de Bold en [bold.co](https://bold.co).
+
+Luego extrae las credenciales de tu cuenta de Bold y agrégalas a los archivos `.env` del servidor y del cliente.
+
+En el archivo `client/.env` del cliente:
+```env
+# Llave publica de Bold
+VITE_BOLD_PUBLIC_KEY=pk_test_tu_clave_publica_bold
+```
+
+En el archivo `server/.env` del servidor:
+```env
+# Llave privada de Bold
+BOLD_PRIVATE_KEY=pk_test_your_bold_private_key_here
+```
 
 ### Configuración de Webhook de Stripe
+
+Configura tu cuenta de Stripe en [stripe.com](https://stripe.com).
+
+Luego extrae las credenciales de tu cuenta de Stripe y agrégalas a los archivos `.env` del servidor y del cliente.
+
+En el archivo `client/.env` del cliente:
+```env
+# Llave publica de Stripe
+VITE_STRIPE_PUBLIC_KEY=pk_test_your_stripe_public_key_here
+```
+
+En el archivo `server/.env` del servidor:
+```env
+# Llave privada de Stripe
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
+# Llave de webhook de Stripe
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+```
+
 Configura tu endpoint de webhook de Stripe para que apunte a:
+
 ```
 https://tudominio.com/api/stripe/webhook
 ```
 
 Eventos a escuchar:
 - `checkout.session.completed`
+
+### Configuración de servidor seguro
+
+Configura tu servidor local para que use SSL, de tal forma de poder probar las funcionalidades de pago, ya que algunas APIs de pago y funcionailidades de Javascript (por ejemplo `crypto`) requieren que el servidor sea seguro.
+
+Para ello, puedes usar el script `make ssl-certs-creation` que creará los certificados SSL en el directorio `server/ssl`.
+
+Crear una entrada en el archivo `/etc/hosts` con el siguiente contenido:
+
+```bash
+sudo nano /etc/hosts
+```
+
+Agregar la siguiente línea:
+
+```
+127.0.0.1 koradibingo.dev
+```
+
+Luego se debe configurar las siguientes variables en los archivos `.env` del servidor y del cliente:
+
+En el archivo `client/.env` del cliente:
+```env
+VITE_APP_DOMAIN_NAME=koradibingo.dev
+VITE_API_BASE_URL=https://${VITE_APP_DOMAIN_NAME}
+```
+
+En el archivo `server/.env` del servidor:
+```env
+APP_DOMAIN_NAME=koradibingo.dev
+CORS_ORIGIN=https://${APP_DOMAIN_NAME}
+```
 
 ## Estructura del Proyecto
 

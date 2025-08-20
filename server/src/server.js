@@ -42,10 +42,23 @@ app.use('/api/admin', adminRoutes);
 io.on('connection', (socket)=>{
   console.log('🟢 Cliente conectado', socket.id);
   socket.on('disconnect', ()=> console.log('🔴 Cliente desconectado', socket.id));
+  socket.on('number:drawn', async ({ number, drawn })=>{
+    // Get last number and drawn numbers from DrawState
+    const state = await DrawState.findOne({}) || await DrawState.create({});
+    drawn = state.drawnNumbers;
+    number = state.lastNumber;
+    io.emit('number:drawn', { number, drawn });
+  });
+  socket.on('draw:reset', ()=>{
+    console.log('Reiniciando la transmisión');
+    io.emit('draw:reset');
+  });
 });
 
 // Arranque
 await connectDB();
 server.listen(env.PORT, ()=>{
-  console.log(`🚀 API en http://localhost:${env.PORT}`);
+  const url = env.CORS_ORIGIN.startsWith('https://') ? `https://${env.APP_DOMAIN_NAME}` : `http://${env.APP_DOMAIN_NAME}:${env.PORT}`;
+  console.log(`🚀 API en: ${url}`);
+  console.log(`🖥️  Cliente CORS: ${env.CORS_ORIGIN}\n`);
 });

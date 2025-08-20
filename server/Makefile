@@ -1,4 +1,17 @@
-.PHONY: install build dev start clean test lint
+.PHONY: install build dev start clean test lint ssl-certs-creation
+
+# Show help
+help:
+	@echo "Available commands:"
+	@echo "  install    - Install npm dependencies"
+	@echo "  dev        - Run server in development mode"
+	@echo "  start      - Run server in production mode"
+	@echo "  clean      - Remove node_modules and package-lock.json"
+	@echo "  reinstall  - Clean and reinstall dependencies"
+	@echo "  test       - Run tests"
+	@echo "  lint       - Run linter"
+	@echo "  help       - Show this help message"
+	@echo "  ssl-certs-creation - Create SSL certificates"
 
 # Install dependencies
 install:
@@ -32,15 +45,3 @@ test:
 # Run linter (when implemented)
 lint:
 	npm run lint
-
-# Show help
-help:
-	@echo "Available commands:"
-	@echo "  install    - Install npm dependencies"
-	@echo "  dev        - Run server in development mode"
-	@echo "  start      - Run server in production mode"
-	@echo "  clean      - Remove node_modules and package-lock.json"
-	@echo "  reinstall  - Clean and reinstall dependencies"
-	@echo "  test       - Run tests"
-	@echo "  lint       - Run linter"
-	@echo "  help       - Show this help message"

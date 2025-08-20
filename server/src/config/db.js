@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import { env } from './env.js';
-
-const debug = true;
+import { debug } from '../utils/utilities.js';
 
 export async function connectDB(){
   mongoose.set('strictQuery', true);

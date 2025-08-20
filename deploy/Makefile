@@ -21,16 +21,19 @@ help:
 
 # Start all services
 up:
-	bash run-server.sh
+	bash run-server.sh run
 
 # Stop all services
 down:
-	docker-compose down
+	bash run-server.sh down
 
 # Restart all services
-restart:
-	docker-compose restart
+restart-docker:
+	bash run-server.sh restart
 
+# Restart all services
+restart: restart-docker logs-f
+	
 # Show logs
 logs:
 	docker-compose logs

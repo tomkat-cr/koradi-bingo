@@ -1,4 +1,4 @@
-    import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { io } from 'socket.io-client'
 
 const SOCKET_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000').replace('http','ws')

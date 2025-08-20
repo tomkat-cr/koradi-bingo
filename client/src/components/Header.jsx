@@ -1,7 +1,8 @@
 import React from 'react'
 import logo from '../assets/koradi-logo.png'
+import { Link } from 'react-router-dom'
 
-export default function Header({ onNavigate }){
+export default function Header(){
   return (
     <header className="header">
       <div style={{display:'flex',alignItems:'center',gap:12}}>
@@ -9,9 +10,9 @@ export default function Header({ onNavigate }){
         <strong>Arte que Sana</strong>
       </div>
       <nav style={{display:'flex',gap:8}}>
-        <button className="btn btn-outline" onClick={()=>onNavigate('landing')}>Inicio</button>
-        <button className="btn btn-primary" onClick={()=>onNavigate('bingo')}>Ir al Bingo</button>
-        <button className="btn btn-outline" onClick={()=>onNavigate('admin')}>Staff</button>
+        <Link className="btn btn-outline" to="/">Inicio</Link>
+        <Link className="btn btn-primary" to="/bingo">Ir al Bingo</Link>
+        <Link className="btn btn-outline" to="/admin">Staff</Link>
       </nav>
     </header>
   )

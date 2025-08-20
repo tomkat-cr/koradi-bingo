@@ -22,11 +22,11 @@ install:
 
 # Build for production
 build:
-	npm run build
+	bash ./run-client.sh build
 
 # Run in development mode with Vite
 dev:
-	npm run dev
+	bash ./run-client.sh run
 
 # Alias for dev (common pattern)
 start: dev
@@ -34,7 +34,7 @@ run: dev
 
 # Preview production build
 preview:
-	npm run preview
+	bash ./run-client.sh preview
 
 # Clean node_modules, package-lock.json, and dist
 clean:
