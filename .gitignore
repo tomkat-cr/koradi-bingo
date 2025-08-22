@@ -52,3 +52,7 @@ Koradi-Bingo-Project-Specs.md
 
 # Client
 dist
+
+# SSL Certificates
+mkcert-*
+

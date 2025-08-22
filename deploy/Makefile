@@ -36,11 +36,11 @@ restart: restart-docker logs-f
 	
 # Show logs
 logs:
-	docker-compose logs
+	docker compose logs
 
 # Follow logs
 logs-f:
-	docker-compose logs -f
+	docker compose logs -f
 
 # Build client and start services
 build:
@@ -51,25 +51,25 @@ build:
 
 # Clean up - stop services and remove volumes
 clean:
-	docker-compose down -v
+	docker compose down -v
 	docker system prune -f
 
 # Show service status
 status:
-	docker-compose ps
+	docker compose ps
 
 # Open shell in server container
 shell-server:
-	docker-compose exec server sh
+	docker compose exec server sh
 
 # Open shell in mongo container
 shell-mongo:
-	docker-compose exec mongo mongosh
+	docker compose exec mongo mongosh
 
 # Backup MongoDB data
 backup:
 	@mkdir -p backups
-	docker-compose exec mongo mongodump --db koradi_bingo --out /tmp/backup
+	docker compose exec mongo mongodump --db koradi_bingo --out /tmp/backup
 	docker cp $$(docker-compose ps -q mongo):/tmp/backup ./backups/backup-$$(date +%Y%m%d-%H%M%S)
 	@echo "Backup created in backups/ directory"
 
@@ -77,5 +77,5 @@ backup:
 restore:
 	@if [ -z "$(BACKUP)" ]; then echo "Usage: make restore BACKUP=backup-folder-name"; exit 1; fi
 	docker cp ./backups/$(BACKUP) $$(docker-compose ps -q mongo):/tmp/restore
-	docker-compose exec mongo mongorestore --db koradi_bingo --drop /tmp/restore/koradi_bingo
+	docker compose exec mongo mongorestore --db koradi_bingo --drop /tmp/restore/koradi_bingo
 	@echo "Database restored from $(BACKUP)"

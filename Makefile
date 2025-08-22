@@ -35,12 +35,12 @@ logs-f:
 
 # Clean up - stop services and remove volumes
 clean-docker:
-	cd deploy && docker-compose down -v
+	cd deploy && docker compose down -v
 	docker system prune -f
 
 # Show service status
 status:
-	docker-compose ps
+	docker compose ps
 
 install:
 	npm run install:all

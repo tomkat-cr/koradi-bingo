@@ -1,7 +1,80 @@
 #!/bin/sh
 # local_ssl_certs_creation.sh
 # 2023-11-27 | CR
-#
+
+install_mkcert_linux_common() {
+    if ! curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+    then
+        echo ""
+        echo "Error downloading mkcert"
+        exit 1
+    fi
+    if ! chmod +x mkcert-v*-linux-amd64
+    then
+        echo ""
+        echo "Error chmod mkcert-v*-linux-amd64"
+        exit 1
+    fi
+    if ! sudo cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+    then
+        echo ""
+        echo "Error copying mkcert-v*-linux-amd64 to /usr/local/bin/mkcert"
+        exit 1
+    fi
+}
+
+install_mkcert_rhel() {
+    if ! sudo yum install -y nss-tools curl
+    then
+        echo ""
+        echo "Error installing nss-tools curl"
+        exit 1
+    fi
+    install_mkcert_linux_common
+}
+
+install_mkcert_debian() {
+    if ! sudo apt install -y libnss3-tools curl
+    then
+        echo ""
+        echo "Error installing libnss3-tools curl"
+        exit 1
+    fi
+    install_mkcert_linux_common
+}
+
+install_mkcert_macos() {
+    if ! brew install mkcert
+    then
+        echo ""
+        echo "Error installing mkcert"
+        exit 1
+    fi
+    if ! brew install nss # if you use Firefox
+    then
+        echo ""
+        echo "Error installing nss"
+        exit 1
+    fi
+}
+
+install_mkcert() {
+    if apt --version > /dev/null 2>&1
+    then
+        install_mkcert_debian
+    elif yum --version > /dev/null 2>&1
+    then
+        install_mkcert_rhel
+    elif brew --version > /dev/null 2>&1
+    then
+        install_mkcert_macos
+    else
+        echo ""
+        echo "Error: Unsupported OS"
+        exit 1
+    fi
+}
+
 echo ""
 echo "Create auto-signed SSL certificates (crt/key)"
 
@@ -65,7 +138,7 @@ if [ "${SSL_CERT_GEN_METHOD}" = "mkcert" ]; then
     # https://github.com/FiloSottile/mkcert
 
     # 1) Install mkcert in MacOS:
-    brew install mkcert nss
+    install_mkcert
 
     # 2) Install the local CA:
     mkcert -install
