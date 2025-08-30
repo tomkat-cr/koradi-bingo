@@ -15,7 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a Ch
 ### Removed
 
 
-## [0.1.0] - 2025-08-18
+## [1.0.0] - 2025-08-18
 
 - Integracion con Bold.co
 
